@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="brake" tests="3" failures="1">
+    <testcase name="test_brake_applies" time="0.004"/>
+    <testcase name="test_brake_releases" time="0.003">
+      <failure message="released after 140 ms, limit is 100 ms">timeout</failure>
+    </testcase>
+    <testcase name="test_speed_limit_warning" time="0.002"/>
+  </testsuite>
+</testsuites>

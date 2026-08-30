@@ -1,0 +1,6 @@
+build/
+*.exe
+*.o
+*.bin
+__pycache__/
+trace_report.md

@@ -1,0 +1,5 @@
+# req_id, description, verified_by
+REQ-001, The brake shall engage within 100 ms of the pedal signal, test_brake_applies
+REQ-002, The brake shall release when the pedal signal clears, test_brake_releases
+REQ-003, The system shall log every brake event to non volatile storage,
+REQ-004, The system shall enter limp home after three consecutive faults, test_limp_home_after_three_faults

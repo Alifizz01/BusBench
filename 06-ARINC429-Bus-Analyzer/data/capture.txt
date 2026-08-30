@@ -1,0 +1,7 @@
+# One 32 bit ARINC 429 word per line, as captured off the bus.
+E445C1C1
+67800111
+7F060151
+68C3C10B
+A0000111
+E445D1C1

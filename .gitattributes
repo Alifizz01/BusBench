@@ -1,0 +1,4 @@
+* text=auto
+
+# GNU make chokes on CRLF in recipes on some platforms.
+Makefile text eol=lf

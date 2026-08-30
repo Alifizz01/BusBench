@@ -1,0 +1,6 @@
+# ARINC 429 label dictionary. The avionics equivalent of a DBC file.
+# label(octal), name, unit, lsb_scale, data_bits
+0203, ALTITUDE, ft, 1.0, 18
+0210, AIRSPEED, kt, 0.0625, 15
+0212, VERT_SPEED, ft/min, 1.0, 16
+0320, HEADING, deg, 0.01, 17
