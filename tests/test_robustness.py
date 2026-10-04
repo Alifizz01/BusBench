@@ -40,6 +40,15 @@ def test_can_decode_matches_reference_for_random_signals():
         checked += 1
 
 
+# @req REQ-102
+def test_zero_length_and_oversized_signals_are_refused():
+    """Regression: libFuzzer found the C decoder shifting by -1 here."""
+    frame = CanFrame(0x100, bytes(8))
+    for length in (0, 65):
+        for little in (True, False):
+            assert decode(DbcSignal("s", 0x100, 7, length, little, True), frame) is None
+
+
 # @req REQ-203
 def test_isotp_round_trips_every_length_and_survives_garbage():
     for size in range(1, 300):

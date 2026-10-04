@@ -45,6 +45,16 @@ int main(void)
     assert(Dbc_Decode(ang, &frames[1], &v) && close_to(v, -45.0));
     /* A signal only decodes from its own CAN ID. */
     assert(!Dbc_Decode(rpm, &frames[1], &v));
+    /* Regression, found by libFuzzer: zero-length and oversized signals are
+     * refused instead of shifting by -1 (undefined behaviour). */
+    {
+        DbcSignal_t bad = *rpm;
+        bad.length_bits = 0;
+        bad.is_signed = true;
+        assert(!Dbc_Decode(&bad, &frames[0], &v));
+        bad.length_bits = 65;
+        assert(!Dbc_Decode(&bad, &frames[0], &v));
+    }
 
     for (int f = 0; f < nfrm; f++) {
         printf("[%llu us] ID 0x%03X:\n", (unsigned long long)frames[f].timestamp_us, frames[f].id);

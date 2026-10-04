@@ -1,5 +1,6 @@
 /* libFuzzer: one DoIP message straight from the network into the gateway
  * state machine. The length field is a lie as often as not. */
+#include <stddef.h>
 #include "doip_gateway.h"
 
 static void echo_ecu(const uint8_t *req, uint16_t req_len,

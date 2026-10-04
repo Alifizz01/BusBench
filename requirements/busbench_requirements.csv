@@ -1,7 +1,7 @@
 # BusBench's own requirements, verified in CI by BusBench's own DO-178C traceability tool.
 # req_id, description, verified_by (several tests separated by ;)
 REQ-101, The CAN decoder shall decode Intel and Motorola signals including signed and offset signals to physical units, test_dbc_decoding_intel_and_motorola
-REQ-102, The CAN decoder shall agree with an independent reference extraction for any signal geometry and refuse signals that do not fit the frame, test_can_decode_matches_reference_for_random_signals
+REQ-102, The CAN decoder shall agree with an independent reference extraction for any signal geometry and refuse signals that do not fit the frame, test_can_decode_matches_reference_for_random_signals; test_zero_length_and_oversized_signals_are_refused
 REQ-201, The UDS client shall run session control / read / security access / write and surface every negative response code, test_session
 REQ-202, ISO-TP reception shall reject a gap in the consecutive frame sequence number, test_isotp_catches_a_dropped_frame
 REQ-203, ISO-TP shall round-trip every payload length and fail cleanly on arbitrary frames, test_isotp_round_trip; test_isotp_round_trips_every_length_and_survives_garbage

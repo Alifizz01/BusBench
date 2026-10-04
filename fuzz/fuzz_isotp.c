@@ -1,5 +1,6 @@
 /* libFuzzer: ISO-TP reassembly fed arbitrary CAN frames. Lengths, sequence
  * numbers and first-frame totals all come from the input. */
+#include <stddef.h>
 #include "isotp.h"
 
 static void drop(const uint8_t *frame, uint8_t len) { (void)frame; (void)len; }

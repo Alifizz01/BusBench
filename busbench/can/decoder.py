@@ -92,6 +92,10 @@ def decode(sig: DbcSignal, frame: CanFrame) -> float | None:
     """Physical value of one signal, or None if this frame is not its."""
     if sig.can_id != frame.can_id:
         return None
+    # Same guard as the C version, where libFuzzer found a zero-length
+    # signal shifting by -1. Here it would raise instead of decoding.
+    if not 1 <= sig.length_bits <= 64:
+        return None
 
     total_bits = frame.dlc * 8
     raw = 0

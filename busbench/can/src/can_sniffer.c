@@ -70,6 +70,10 @@ bool Dbc_Decode(const DbcSignal_t *sig, const CanRawFrame_t *frame, double *valu
 {
     if (!sig || !frame || !value_out) return false;
     if (sig->can_id != frame->id) return false;
+    /* Found by libFuzzer: a zero-length signal reached the sign check below
+     * and shifted by -1, which is undefined behaviour. A DBC line can say
+     * anything, so the geometry is checked here, not only in the loader. */
+    if (sig->length_bits == 0 || sig->length_bits > 64) return false;
 
     int total_bits = frame->dlc * 8;
     uint64_t raw = 0;
