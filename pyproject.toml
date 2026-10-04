@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "busbench"
+version = "1.0.0"
+description = "BusBench - automotive and avionics protocols in C and Python, one workbench: CAN, UDS, AUTOSAR, ISO 26262, DoIP, ARINC 429, MIL-STD-1553, ARINC 653, DO-178C, FDR."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Muhamad Alif Izzuwan Bin Ibrahim" }]
+dependencies = []
+
+[project.optional-dependencies]
+studio = ["pywebview>=5"]
+dev = ["pytest"]
+
+[project.scripts]
+busbench = "busbench.cli:main"
+
+[project.gui-scripts]
+busbench-studio = "busbench.studio_app:main"
+
+[tool.setuptools.packages.find]
+include = ["busbench*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "data/**/*", "include/*", "src/*", "test/*", "studio/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["busbench", "tests"]
+norecursedirs = ["data", "build"]

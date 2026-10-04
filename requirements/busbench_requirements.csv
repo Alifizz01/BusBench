@@ -1,0 +1,38 @@
+# BusBench's own requirements, verified in CI by BusBench's own DO-178C traceability tool.
+# req_id, description, verified_by (several tests separated by ;)
+REQ-101, The CAN decoder shall decode Intel and Motorola signals including signed and offset signals to physical units, test_dbc_decoding_intel_and_motorola
+REQ-102, The CAN decoder shall agree with an independent reference extraction for any signal geometry and refuse signals that do not fit the frame, test_can_decode_matches_reference_for_random_signals
+REQ-201, The UDS client shall run session control / read / security access / write and surface every negative response code, test_session
+REQ-202, ISO-TP reception shall reject a gap in the consecutive frame sequence number, test_isotp_catches_a_dropped_frame
+REQ-203, ISO-TP shall round-trip every payload length and fail cleanly on arbitrary frames, test_isotp_round_trip; test_isotp_round_trips_every_length_and_survives_garbage
+REQ-301, The RTE shall report a signal as stale once its age exceeds the freshness limit, test_freshness
+REQ-302, The overspeed warning shall latch above the limit and clear only when braking below it, test_overspeed_latches_until_braking
+REQ-303, A silent bus shall turn the warning lamp on (fail visible), test_dead_bus_lights_the_lamp
+REQ-304, The application component shall depend on the RTE only, test_application_never_reaches_into_the_driver
+REQ-401, The windowed watchdog shall reject kicks that are too early or too late and an inverted window shall be a configuration error, test_window_rejects_early_and_late; test_inverted_window_is_a_config_error
+REQ-402, A task that stops kicking shall be detected, test_silent_task_is_caught
+REQ-403, A reading that is not physically reachable from the previous one shall be rejected, test_plausibility
+REQ-404, Faults shall be debounced and escalate to the most restrictive state and heal; a full fault table shall never read as NORMAL, test_faults_debounce_escalate_and_heal; test_fault_table_overflow_is_not_normal
+REQ-501, The DoIP gateway shall answer any byte sequence with a well-formed message or nothing; bad version patterns and unknown payload types shall get a NACK, test_doip_gateway_answers_any_bytes_with_a_wellformed_message; test_header_round_trip; test_bad_version_pattern_is_rejected; test_unknown_payload_type_gets_an_answer
+REQ-502, The DoIP gateway shall deliver diagnostics to the UDS ECU over ISO-TP, test_doip_routes_diagnostics_to_the_uds_ecu_over_isotp
+REQ-503, The Python tester and the C gateway shall interoperate over TCP; TCP framing shall survive split packets, test_python_tester_drives_the_c_gateway_over_tcp; test_real_tcp_round_trip; test_a_message_split_across_two_packets_still_arrives
+REQ-504, Diagnostics shall be refused before routing activation and for any tester other than the activated one; vehicle identification shall work before activation, test_diagnostics_before_activation_are_refused; test_address_zero_cannot_activate; test_second_tester_cannot_ride_the_first_activation; test_identification_works_before_activation
+REQ-505, A header whose length field exceeds the received bytes shall be rejected, test_lying_length_field_is_rejected
+REQ-601, Words with even parity shall be discarded and the bit-reversed label shall be decoded correctly, test_odd_parity_catches_a_flipped_bit; test_label_is_reversed_on_the_wire
+REQ-602, Build and analyze shall round-trip for every width / label / signed value; unknown labels shall be refused, test_arinc429_build_then_analyze_round_trips; test_round_trip_at_several_widths; test_negative_values_are_twos_complement; test_unknown_label_is_refused_not_guessed
+REQ-603, A word whose SSM is not Normal Operation shall be reported unusable, test_a_word_can_decode_and_still_be_unusable
+REQ-604, The Python and C ARINC 429 analyzers shall agree on the sample capture, test_capture_file_matches_the_c_implementation
+REQ-701, 1553 command words shall round-trip for all 65536 patterns with word count 32 encoded as 0 and mode codes preserved, test_mil1553_command_word_round_trips_for_all_16_bit_patterns; test_command_word_round_trip; test_word_count_32_encodes_as_zero; test_mode_code_subaddress_keeps_its_code
+REQ-702, The bus controller shall transfer data both ways and report absent / busy / faulty terminals as failures, test_write_then_read_back; test_absent_rt_times_out; test_busy_rt_gives_no_data; test_subsystem_fault_is_reported_then_cleared
+REQ-703, A broadcast shall reach every terminal without a status word and one unresponsive terminal shall not stop the minor frame, test_broadcast_reaches_everyone_and_nobody_answers; test_one_dead_rt_does_not_stop_the_frame
+REQ-801, Overlapping slices and slices past the major frame shall be rejected at configuration time, test_overlapping_slices_are_rejected; test_slice_past_the_frame_end_is_rejected
+REQ-802, A hung partition shall not delay any other partition, test_a_hung_partition_only_hurts_itself
+REQ-803, Cross-partition memory access and access outside a slice shall be refused and logged, test_cross_partition_access_is_refused; test_access_outside_a_slice_is_refused
+REQ-901, Every module shall be operable through the REST API, test_every_module_is_reachable_through_the_api
+REQ-902, The API shall refuse non-local and non-JSON requests and report errors readably, test_api_refuses_cross_site_requests
+REQ-1001, Recorder frames shall round-trip through their byte form, test_fdr_random_payloads_round_trip; test_a_frame_survives_a_round_trip_through_bytes; test_crc_matches_the_known_vector
+REQ-1002, A frame with any single bit flipped shall never be trusted; an empty slot is not a frame, test_fdr_never_trusts_a_damaged_frame; test_an_empty_slot_is_not_a_frame; test_a_torn_final_frame_is_skipped_not_misread
+REQ-1003, The recorder shall record CAN and ARINC 429 traffic and replay it in time order, test_fdr_records_real_can_and_arinc_traffic; test_write_and_replay_in_order; test_ring_keeps_the_newest_and_stays_chronological
+REQ-1004, One corrupted frame shall cost exactly one frame and recording shall resume after the newest frame on power-up, test_one_flipped_byte_costs_exactly_one_frame; test_reopening_resumes_after_the_newest_frame
+REQ-1101, The traceability tool shall parse requirements / JUnit results / source annotations and report every kind of gap, test_requirements_parse; test_junit_results_parse; test_source_annotations_are_found; test_every_kind_of_gap_is_reported
+REQ-1102, A fully traced project shall pass the gate and the report shall match the C implementation, test_a_clean_project_exits_zero; test_report_matches_the_c_implementation

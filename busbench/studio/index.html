@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BusBench Studio</title>
+<link rel="stylesheet" href="uPlot.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="rail" aria-label="Modules">
+  <a class="brand" href="#/overview">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="6" width="26" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 18V10M9 18V10M13 18v-8M17 18v-4M21 18v-6" stroke="#F06A1D" stroke-width="2"/></svg>
+    <span>Bus<b>Bench</b></span>
+  </a>
+  <a class="nav-link" href="#/overview" data-page="overview"><span>Overview</span><i class="dot" data-dot="all"></i></a>
+  <p class="nav-group">Automotive</p>
+  <div id="nav-automotive"></div>
+  <p class="nav-group">Avionics</p>
+  <div id="nav-avionics"></div>
+  <div class="rail-foot">
+    <span id="conn" class="conn"><i></i><span>connecting…</span></span>
+    <button class="ghost dark" id="api-open">{ } API</button>
+  </div>
+</nav>
+
+<main id="page" tabindex="-1"></main>
+
+<dialog id="api-dlg" aria-labelledby="api-title">
+  <form method="dialog">
+    <h2 id="api-title">The last action, as an API call</h2>
+    <p class="muted">Studio is a client of the local BusBench API. Every button is a <code>POST /api/&lt;name&gt;</code>, so scripts, CI or another tool can drive the bench the same way. Headless: <code>busbench serve</code>.</p>
+    <pre id="api-code">Click any button in Studio first.</pre>
+    <div class="dlg-foot">
+      <button type="button" class="ghost" id="api-copy">Copy</button>
+      <button class="primary">Close</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="uPlot.iife.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

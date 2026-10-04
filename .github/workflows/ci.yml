@@ -1,0 +1,79 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  # C and Python halves of every module, plus the C <-> Python DoIP interop check,
+  # on three compilers and two operating systems.
+  build-and-test:
+    name: test (${{ matrix.os }}, ${{ matrix.cc }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, cc: gcc }
+          - { os: ubuntu-latest, cc: clang }
+          - { os: windows-latest, cc: msvc }
+    env:
+      BUSBENCH_CC: ${{ matrix.cc }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .[dev]
+      - run: busbench test -v
+
+  # The C tests again, under AddressSanitizer and UndefinedBehaviorSanitizer.
+  sanitizers:
+    runs-on: ubuntu-latest
+    env: { BUSBENCH_CC: gcc }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - run: busbench test --sanitize
+
+  # Coverage-guided fuzzing of the four parsers that read untrusted bytes.
+  fuzz:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - { name: can, src: busbench/can/src/can_sniffer.c, inc: busbench/can/include }
+          - { name: isotp, src: busbench/uds/src/isotp.c, inc: busbench/uds/include }
+          - { name: doip, src: busbench/doip/src/doip_gateway.c, inc: busbench/doip/include }
+          - { name: arinc429, src: busbench/arinc429/src/arinc429_analyzer.c, inc: busbench/arinc429/include }
+    steps:
+      - uses: actions/checkout@v4
+      - run: clang -g -O1 -fsanitize=fuzzer,address,undefined -fno-sanitize-recover=all -I${{ matrix.target.inc }} fuzz/fuzz_${{ matrix.target.name }}.c ${{ matrix.target.src }} -o fuzzer
+      - run: ./fuzzer -max_total_time=60 -print_final_stats=1
+
+  # Static analysis of every C source.
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y cppcheck
+      - run: cppcheck --std=c11 --enable=warning,portability,performance --inline-suppr --error-exitcode=1 $(for d in busbench/*/include; do echo -I$d; done) busbench/*/src/*.c
+
+  # BusBench verifies itself with its own DO-178C traceability tool:
+  # every requirement needs passing tests, every test needs a requirement.
+  traceability:
+    runs-on: ubuntu-latest
+    env: { BUSBENCH_CC: gcc }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .[dev] pytest-cov
+      - run: pytest -q --junitxml=build/junit.xml --cov=busbench --cov-report=term --cov-report=markdown:build/coverage.md
+      - name: Traceability gate
+        run: busbench trace --requirements requirements/busbench_requirements.csv --results build/junit.xml --source busbench/*/test tests --out build/trace_report.md
+      - name: Publish matrix and coverage
+        if: always()
+        run: cat build/trace_report.md build/coverage.md >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: traceability-report, path: build/ }
