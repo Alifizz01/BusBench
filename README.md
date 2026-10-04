@@ -29,7 +29,7 @@ against them and proving that an implementation is right are all harder than the
 | 1 | **The knowledge is locked behind hardware and licences.** Seeing a CAN signal, a 1553 transaction or a DoIP session usually means a bus interface plus CANoe, a DDC/Astronics card or a vendor analyzer. | Thousands of euros before the first frame; students and small teams learn from PDFs instead of traffic. | Every bus is **simulated**. Clone, install, and all ten protocols run on a laptop with the standard library only. |
 | 2 | **Prototype in Python, ship in C, and the two drift apart.** | A decoder that is right in the notebook and wrong on the ECU, found late. | Each module exists **twice**, the C half against a shared header contract. Both halves pin the **same expected values**, and the Python DoIP tester drives the **C gateway over real TCP** in every test run. |
 | 3 | **Bus parsers are attack surface.** DoIP listens on TCP 13400; ISO-TP reassembly and CAN bit-walking index into buffers with lengths taken off the wire. | Out-of-bounds reads and crashes on the first malformed frame, or a car that answers UDS to anyone. | **libFuzzer** on four C parsers, **ASan + UBSan** builds of every C test, **cppcheck**, and **property tests** that compare decoders against independent reference formulas over thousands of random inputs. |
-| 4 | **Certification wants traceability, and spreadsheets rot.** DO-178C and ISO 26262 expect every requirement to trace to a passing test, and every test to a requirement. | A requirement whose test was deleted still looks traced; audits find it, not CI. | A traceability tool that reads requirements, JUnit results **and the source tree back**, and **BusBench uses it on itself**: 36 requirements ↔ 71 tests, enforced as a CI gate. |
+| 4 | **Certification wants traceability, and spreadsheets rot.** DO-178C and ISO 26262 expect every requirement to trace to a passing test, and every test to a requirement. | A requirement whose test was deleted still looks traced; audits find it, not CI. | A traceability tool that reads requirements, JUnit results **and the source tree back**, and **BusBench uses it on itself**: 36 requirements ↔ 72 tests, enforced as a CI gate. |
 | 5 | **Protocols are invisible.** Endianness, bit-reversed labels, sequence numbers and time slices only exist as tables in a standard. | The classic mistakes (Motorola bit order, treating 0x78 as an error, a stale signal read as current) get made in production code. | **BusBench Studio** shows the bits: every frame, word and header drawn as a field-by-field ribbon, live, for every module. |
 | 6 | **Every bus comes with its own tool.** | Ten tools, ten data formats, no automation across them. | One package, **one CLI, one REST API, one GUI**. The modules are wired together too: DoIP → ISO-TP → UDS ECU, and CAN + ARINC 429 traffic → flight data recorder. |
 
@@ -117,10 +117,10 @@ flowchart LR
 | **Cross-language interop** | `busbench test doip` | The Python tester drives the compiled C gateway over real TCP: identify, refused diagnostics, routing activation, VIN |
 | **Compiler matrix** | CI: gcc + clang (Linux), MSVC (Windows) | Portable C11, warnings on (`-Wall -Wextra`, `/W3`) |
 | **Sanitizers** | `busbench test --sanitize` | Every C test suite clean under AddressSanitizer + UndefinedBehaviorSanitizer |
-| **Fuzzing** | [`fuzz/`](fuzz) | libFuzzer + ASan + UBSan on CAN decode, ISO-TP reassembly, DoIP message handling and ARINC 429 analysis |
+| **Fuzzing** | [`fuzz/`](fuzz) | libFuzzer + ASan + UBSan on CAN decode, ISO-TP reassembly, DoIP message handling and ARINC 429 analysis. On its first CI run it found undefined behaviour in the C CAN decoder (a shift by -1 for zero-length signals); fixed in both halves with regression tests |
 | **Static analysis** | CI: cppcheck | warning, portability and performance checks over all C sources |
 | **Property tests** | [`tests/test_robustness.py`](tests/test_robustness.py) | CAN decoding vs an independent textbook formula on 3,000 random signal geometries; all 65,536 MIL-1553 command words round-trip; any single bit flip in an FDR frame is rejected |
-| **Self-traceability** | [`requirements/`](requirements/busbench_requirements.csv) + CI | BusBench's own DO-178C tool gates the build: 36 requirements, 71 tests, zero gaps. The matrix is published in every CI run |
+| **Self-traceability** | [`requirements/`](requirements/busbench_requirements.csv) + CI | BusBench's own DO-178C tool gates the build: 36 requirements, 72 tests, zero gaps. The matrix is published in every CI run |
 
 ```mermaid
 flowchart LR
@@ -128,7 +128,7 @@ flowchart LR
     P --> SAN["ASan + UBSan"]
     P --> FZ["libFuzzer ×4"]
     P --> SA["cppcheck"]
-    P --> TR["pytest → JUnit → busbench trace<br/>36 requirements ↔ 71 tests"]
+    P --> TR["pytest → JUnit → busbench trace<br/>36 requirements ↔ 72 tests"]
 ```
 
 ---
