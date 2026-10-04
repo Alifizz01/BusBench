@@ -19,7 +19,7 @@ import busbench
 from busbench.api import LOCK, ROUTES
 
 STATIC = os.path.join(os.path.dirname(__file__), "studio")
-TYPES = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml"}
+TYPES = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png"}
 PORT = 8770
 
 

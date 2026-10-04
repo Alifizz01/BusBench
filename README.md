@@ -1,6 +1,9 @@
 <div align="center">
 
-# BusBench
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+  <img src="assets/logo.png" alt="BusBench" width="420">
+</picture>
 
 **Ten automotive and avionics protocols, implemented twice (in C and in Python), tested against each other, and explorable in one desktop workbench.**
 

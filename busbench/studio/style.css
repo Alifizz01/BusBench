@@ -39,7 +39,7 @@ a { color: var(--f-id); }
 /* ---------------- rail ---------------- */
 .rail { background: var(--nav); color: var(--nav-ink); display: flex; flex-direction: column; padding: 14px 10px; overflow-y: auto; }
 .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; padding: 4px 8px 16px; font: 300 21px/1 var(--f-label); letter-spacing: .02em; }
-.brand svg { width: 28px; height: 28px; color: #8C99AB; }
+.brand img { border-radius: 7px; box-shadow: 0 0 0 1px #2C3848; }
 .brand b { font-weight: 600; }
 .nav-group { font: 600 11px var(--f-label); letter-spacing: .16em; text-transform: uppercase; color: #6B7889; margin: 16px 10px 6px; }
 .nav-link { display: flex; align-items: center; gap: 8px; color: var(--nav-ink); text-decoration: none; padding: 6px 10px; border-radius: 5px; }
