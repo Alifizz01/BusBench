@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
-  <img src="assets/logo.png" alt="BusBench" width="420">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <img src="assets/logo.svg" alt="BusBench" width="380">
 </picture>
 
 **Ten automotive and avionics protocols, implemented twice (in C and in Python), tested against each other, and explorable in one desktop workbench.**
