@@ -18,7 +18,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import busbench
 from busbench.api import LOCK, ROUTES
 
-STATIC = os.path.join(os.path.dirname(__file__), "studio")
+STATIC = os.path.abspath(os.path.join(os.path.dirname(__file__), "studio"))   # normalised: the traversal check compares against it
 TYPES = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png"}
 PORT = 8770
 
@@ -66,7 +66,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, sorted(ROUTES))
         rel = "index.html" if path == "/" else path.lstrip("/")
         full = os.path.normpath(os.path.join(STATIC, rel))
-        if not full.startswith(STATIC) or not os.path.isfile(full):
+        if not full.startswith(STATIC + os.sep) or not os.path.isfile(full):
             return self._send(404, {"error": "not found"})
         with open(full, "rb") as f:
             self._send(200, body=f.read(), ctype=TYPES.get(os.path.splitext(full)[1], "application/octet-stream"))
